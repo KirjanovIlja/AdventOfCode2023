@@ -11,17 +11,18 @@ import (
 func main() {
 
 	var result int64
-
 	digits_map := map[string]int{"one": 1,"two": 2,"three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9}
 
+	// Open and read file
 	readFile, err := os.Open("input_day01.txt")
-
 	if err != nil {
 		fmt.Println(err)
 	}
-
+	
+	// Read file
 	fileScanner := bufio.NewScanner(readFile)
 
+	// Split to strings
 	fileScanner.Split(bufio.ScanLines)
 
 	for fileScanner.Scan() {
@@ -51,34 +52,21 @@ func main() {
 			keys_of_map = append(keys_of_map, k)
 		}
 
-		// Continue if none of digits or words found
-		if len(keys_of_map) == 0 {
-			continue
-		}
-
 		// Get first and last indexes
 		first := found_digits_indexes[Min(keys_of_map)]
 		last := found_digits_indexes[Max(keys_of_map)]
 
-		// Create final strig
-		temp_combination := first + last
-
-		// Replace string value to digit in final string
-		fmt.Println(fileScanner.Text())
-		fmt.Println(found_digits_indexes)
-		fmt.Println(temp_combination)
-
-		temp_combination_int, err := strconv.ParseInt(temp_combination, 10, 0)
-
+		// Create final number
+		temp_combination_int, err := strconv.ParseInt(first + last, 10, 0)
 		if err != nil {
 			fmt.Println(err)
 		}
 
+		// Add to final result sum
 		result += temp_combination_int
 	}
 
 	fmt.Println(result)
-
 	readFile.Close()
 } 
 
