@@ -24,11 +24,19 @@ func main() {
 	// Split to strings
 	fileScanner.Split(bufio.ScanLines)
 
+	// Map of won numbers
+	won_numbers := make(map[int]int)
+
+	// Map of instance number
+	instance_numbers := make(map[int]int)
+
+	// Number of line
+	n := 0
+
 	for fileScanner.Scan() {
 
 		current_line := fileScanner.Text()
-
-		line_result := 0
+		intersection_size := 0
 
  		// Retrieve cards
 		cards := strings.Split(current_line, ": ")
@@ -39,20 +47,26 @@ func main() {
 		winning_cards_int, _ := sliceAtoi(winning_cards)
 		my_cards_int, _ := sliceAtoi(my_cards)
 
-		intersection := intersection(winning_cards_int, my_cards_int)
-		
-		if len(intersection) > 0 {
-			line_result = 1
-			for i := 0; i < len(intersection) - 1; i++ {
-				line_result = 2 * line_result
-			}
+		intersection_size = len(intersection_of_arrays(winning_cards_int, my_cards_int))
+
+		won_numbers[n] = intersection_size
+		instance_numbers[n] = 1
+		n += 1
+	}
+
+	for j := 0; j < len(instance_numbers); j++ {
+		for a := 0; a < instance_numbers[j]; a++ {
+			for i := 1; i < won_numbers[j] + 1; i++ {
+				if _, ok := instance_numbers[j+i]; ok {
+					instance_numbers[j+i] += 1
+				}
+			} 
 		}
 
-		fmt.Println(intersection)
+		result += instance_numbers[j]
 	}
 	fmt.Println(result)
 }
-
 
 func process_line_by_line(n int, k int) (int){
 	if n == 0 {
@@ -61,7 +75,6 @@ func process_line_by_line(n int, k int) (int){
 
 	return 1
 }
-
 
 func sliceAtoi(sa []string) ([]int, error) {
     si := []int{}
@@ -78,7 +91,7 @@ func sliceAtoi(sa []string) ([]int, error) {
     return si, nil
 }
 
-func intersection(s1, s2 []int) (inter []int) {
+func intersection_of_arrays(s1, s2 []int) (inter []int) {
     hash := make(map[int]bool)
     for _, e := range s1 {
         hash[e] = true
